@@ -1,4 +1,5 @@
 import { Link, Head } from '@inertiajs/react';
+import PrimaryButton from '@/Components/PrimaryButton';
 
 export default function Home() {
     return (
@@ -8,18 +9,18 @@ export default function Home() {
             <header className="bg-white shadow w-full">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center py-4">
                     {/* Left - Icon */}
-                    <div className="text-2xl font-bold text-indigo-600">TaskManager</div>
+                    <div className="text-2xl font-bold text-blue-700">TaskManager</div>
 
                     <div>
                         <Link
                             href={route('login')}
-                            className="text-sm font-medium text-gray-600 hover:text-gray-900 px-4"
+                            className="ml-4 px-4 py-2 shadow rounded-md font-medium text-gray-600 hover:text-gray-900"
                         >
                             Login
                         </Link>
                         <Link
                             href={route('register')}
-                            className="ml-4 px-4 py-2 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700"
+                            className="ml-4 px-4 py-2 bg-blue-700 text-white rounded-md shadow hover:bg-blue-600"
                         >
                             Register
                         </Link>
@@ -35,7 +36,7 @@ export default function Home() {
                 </p>
                 <Link
                     href={route('dashboard')}
-                    className="px-6 py-3 bg-indigo-600 text-white rounded-md shadow hover:bg-indigo-700"
+                    className="px-6 py-3 bg-blue-700 text-white rounded-md shadow hover:bg-blue-600"
                 >
                     Go to Dashboard
                 </Link>

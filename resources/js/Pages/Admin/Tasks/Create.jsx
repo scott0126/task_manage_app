@@ -1,4 +1,5 @@
 import PrimaryButton from '@/Components/PrimaryButton';
+import AdminLayout from '@/Layouts/AdminLayout';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
 
@@ -17,7 +18,7 @@ export default function Create({ auth }) {
     };
 
     return (
-        <AuthenticatedLayout
+        <AdminLayout
             user={auth.user}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Create Task</h2>}
         >
@@ -106,6 +107,6 @@ export default function Create({ auth }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }

@@ -1,0 +1,50 @@
+.sidebar {
+    width: 12rem; /* Default width */
+    transition: width 0.3s ease; /* Smooth transition */
+}
+
+.sidebar.collapsed {
+    width: 4rem; /* Collapsed width */
+}
+
+.sidebar .label {
+    display: inline-block;
+    font-size: 1rem;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 0.5rem;
+    transition: opacity 0.3s ease, width 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed .label {
+    opacity: 0;
+    width: 0;
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 4rem;
+    }
+    .sidebar .label {
+        opacity: 0;
+        width: 0;
+        display: none;
+    }
+}
+
+@keyframes scaleUp {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.hover\:animate-scaleUp:hover {
+    animation: scaleUp 0.2s ease-in-out;
+}

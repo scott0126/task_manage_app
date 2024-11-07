@@ -5,10 +5,10 @@ export default function NavLink({ active = false, className = '', children, ...p
         <Link
             {...props}
             className={
-                'inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none ' +
+                'relative flex items-center px-1 pt-1 text-sm font-medium leading-5 transform hover:animate-scaleUp ' +
                 (active
-                    ? 'border-indigo-400 text-gray-900 focus:border-indigo-700 '
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:text-gray-700 focus:border-gray-300 ') +
+                    ? 'before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:h-[80%] before:w-2 before:bg-[#0000ff] pl-3 text-[#0000ff]'
+                    : 'border-transparent text-black hover:text-[#0000ff] hover:blue-300 focus:text-[#0000ff] focus:border-gray-300 ') +
                 className
             }
         >

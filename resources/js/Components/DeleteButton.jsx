@@ -1,6 +1,8 @@
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
+import IconButton from './IconButton';
+import { mdiDelete } from '@mdi/js';
 
 export default function DeleteButton({ route, onSuccess, className = '' }) {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -12,12 +14,12 @@ export default function DeleteButton({ route, onSuccess, className = '' }) {
 
     return (
         <>
-            <button
+            <IconButton
+                icon={mdiDelete}
+                color="red"
                 onClick={() => setShowDeleteModal(true)}
-                className={`text-red-600 hover:text-red-900 ${className}`}
-            >
-                Delete
-            </button>
+                title="Delete Task"
+            />
 
             <Modal show={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                 <div className="p-6">

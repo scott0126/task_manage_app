@@ -10,11 +10,34 @@ use App\Models\TaskAssignment;
 use App\Models\User;
 class TaskController extends Controller
 {
-    public function index(){
-        $tasks = Task::latest()->paginate(10);
+    public function index(Request $request){
+        $query = Task::query();
+
+        // Search
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Status Filter
+        if ($status = $request->input('status')) {
+            $query->where('status', $status);
+        }
+
+        // Priority Filter
+        if ($priority = $request->input('priority')) {
+            $query->where('priority', $priority);
+        }
+
+        $tasks = $query->latest()
+                    ->paginate(8)
+                    ->withQueryString();
 
         return Inertia::render('Admin/Tasks/Index', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'filters' => $request->only(['search', 'status', 'priority'])
         ]);
     }
 
@@ -30,6 +53,7 @@ class TaskController extends Controller
         return Inertia::render('Admin/Tasks/Edit', [
             'task' => $task->load('assignedUsers'),
             'users' => User::all(['id', 'name']),
+            'is_admin' => auth()->user()->isAdmin(),
             'currentAssignments' => $task->assignedUsers->pluck('id'),
         ]);
     }
@@ -56,14 +80,14 @@ class TaskController extends Controller
             'priority' => $validated['priority'],
         ]);
 
-        if (auth()->user()->is_admin && isset($validated['assigned_users'])) {
+        if (auth()->user()->role === 'admin' && isset($validated['assigned_users'])) {
             $task->assignments()->delete();
 
             foreach ($validated['assigned_users'] as $userId) {
                 TaskAssignment::create([
                     'task_id' => $task->id,
                     'user_id' => $userId,
-                    'assigned_by' => auth()->id(),
+                    'assigned_by' => auth()->user()->id,
                 ]);
             }
         }

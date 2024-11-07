@@ -1,9 +1,10 @@
 import { useForm, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
+import AdminLayout from '@/Layouts/AdminLayout';
 
 
-export default function Edit({ auth, task, users, currentAssignments }) {
+export default function Edit({ auth, task, users, is_admin, currentAssignments }) {
     const { data, setData, put, processing, errors } = useForm({
         title: task.title,
         description: task.description,
@@ -20,21 +21,8 @@ export default function Edit({ auth, task, users, currentAssignments }) {
         });
     };
 
-    const handleUserAssignment = (userId) => {
-        const currentAssignments = [...data.assigned_users];
-        const index = currentAssignments.indexOf(userId);
-
-        if (index === -1) {
-            currentAssignments.push(userId);
-        } else {
-            currentAssignments.splice(index, 1);
-        }
-
-        setData('assigned_users', currentAssignments);
-    };
-
     return (
-        <AuthenticatedLayout user={auth.user}>
+        <AdminLayout user={auth.user}>
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <form onSubmit={handleSubmit}>
@@ -99,7 +87,7 @@ export default function Edit({ auth, task, users, currentAssignments }) {
                             {errors.priority && <div className="text-red-500">{errors.priority}</div>}
                         </div>
 
-                        {auth.user.is_admin && (
+                        {is_admin && (
                             <div className="mb-4">
                                 <label className="block mb-2">Assign Users</label>
                                 <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-3">
@@ -146,6 +134,6 @@ export default function Edit({ auth, task, users, currentAssignments }) {
                     </form>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AdminLayout>
     );
 }
