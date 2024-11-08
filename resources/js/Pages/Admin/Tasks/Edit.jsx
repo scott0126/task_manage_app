@@ -4,7 +4,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import AdminLayout from '@/Layouts/AdminLayout';
 
 
-export default function Edit({ auth, task, users, is_admin, currentAssignments }) {
+export default function Edit({ auth, task, users, currentAssignments }) {
     const { data, setData, put, processing, errors } = useForm({
         title: task.title,
         description: task.description,
@@ -87,35 +87,33 @@ export default function Edit({ auth, task, users, is_admin, currentAssignments }
                             {errors.priority && <div className="text-red-500">{errors.priority}</div>}
                         </div>
 
-                        {is_admin && (
-                            <div className="mb-4">
-                                <label className="block mb-2">Assign Users</label>
-                                <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-3">
-                                    {users.map(user => (
-                                        <div key={user.id} className="flex items-center">
-                                            <input
-                                                type="checkbox"
-                                                id={`user-${user.id}`}
-                                                checked={data.assigned_users.includes(user.id)}
-                                                onChange={() => {
-                                                    const newAssignments = data.assigned_users.includes(user.id)
-                                                        ? data.assigned_users.filter(id => id !== user.id)
-                                                        : [...data.assigned_users, user.id];
-                                                    setData('assigned_users', newAssignments);
-                                                }}
-                                                className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                                            />
-                                            <label htmlFor={`user-${user.id}`} className="ml-2">
-                                                {user.name}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
-                                {errors.assigned_users && (
-                                    <div className="text-red-500">{errors.assigned_users}</div>
-                                )}
+                        <div className="mb-4">
+                            <label className="block mb-2">Assign Users</label>
+                            <div className="space-y-2 max-h-60 overflow-y-auto border rounded p-3">
+                                {users.map(user => (
+                                    <div key={user.id} className="flex items-center">
+                                        <input
+                                            type="checkbox"
+                                            id={`user-${user.id}`}
+                                            checked={data.assigned_users.includes(user.id)}
+                                            onChange={() => {
+                                                const newAssignments = data.assigned_users.includes(user.id)
+                                                    ? data.assigned_users.filter(id => id !== user.id)
+                                                    : [...data.assigned_users, user.id];
+                                                setData('assigned_users', newAssignments);
+                                            }}
+                                            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                        />
+                                        <label htmlFor={`user-${user.id}`} className="ml-2">
+                                            {user.name}
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
-                        )}
+                            {errors.assigned_users && (
+                                <div className="text-red-500">{errors.assigned_users}</div>
+                            )}
+                        </div>
 
                         <div className="flex justify-end gap-4">
                             <a

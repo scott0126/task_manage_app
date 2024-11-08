@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\UserController;
 |
 */
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'roles:admin']], function() {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'is_admin']], function() {
     Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function(){
         Route::get('/', [DashboardController::class, 'index'])->name('index');
     });

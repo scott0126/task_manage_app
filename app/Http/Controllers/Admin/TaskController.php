@@ -13,22 +13,34 @@ class TaskController extends Controller
     public function index(Request $request){
         $query = Task::query();
 
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'priority' => 'nullable|in:low,medium,high',
+        ]);
+
+        $filters = array_merge([
+            'search' => '',
+            'status' => '',
+            'priority' => '',
+        ], $validated);
+
         // Search
-        if ($search = $request->input('search')) {
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%");
+        if ($filters['search']) {
+            $query->where(function($q) use ($filters) {
+                $q->where('title', 'like', "%{$filters['search']}%")
+                ->orWhere('description', 'like', "%{$filters['search']}%");
             });
         }
 
         // Status Filter
-        if ($status = $request->input('status')) {
-            $query->where('status', $status);
+        if ($filters['status']) {
+            $query->where('status', $filters['status']);
         }
 
         // Priority Filter
-        if ($priority = $request->input('priority')) {
-            $query->where('priority', $priority);
+        if ($filters['priority']) {
+            $query->where('priority', $filters['priority']);
         }
 
         $tasks = $query->latest()
@@ -53,7 +65,6 @@ class TaskController extends Controller
         return Inertia::render('Admin/Tasks/Edit', [
             'task' => $task->load('assignedUsers'),
             'users' => User::all(['id', 'name']),
-            'is_admin' => auth()->user()->isAdmin(),
             'currentAssignments' => $task->assignedUsers->pluck('id'),
         ]);
     }
@@ -80,7 +91,7 @@ class TaskController extends Controller
             'priority' => $validated['priority'],
         ]);
 
-        if (auth()->user()->role === 'admin' && isset($validated['assigned_users'])) {
+        if (isset($validated['assigned_users'])) {
             $task->assignments()->delete();
 
             foreach ($validated['assigned_users'] as $userId) {
