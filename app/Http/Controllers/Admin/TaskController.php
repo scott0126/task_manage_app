@@ -19,32 +19,26 @@ class TaskController extends Controller
             'priority' => 'nullable|in:low,medium,high',
         ]);
 
-        $filters = array_merge([
-            'search' => '',
-            'status' => '',
-            'priority' => '',
-        ], $validated);
-
         // Search
-        if ($filters['search']) {
-            $query->where(function($q) use ($filters) {
-                $q->where('title', 'like', "%{$filters['search']}%")
-                ->orWhere('description', 'like', "%{$filters['search']}%");
+        if ($validated['search'] ?? null) {
+            $query->where(function($q) use ($validated) {
+                $q->where('title', 'like', "%{$validated['search']}%")
+                ->orWhere('description', 'like', "%{$validated['search']}%");
             });
         }
 
         // Status Filter
-        if ($filters['status']) {
-            $query->where('status', $filters['status']);
+        if ($validated['status'] ?? null) {
+            $query->where('status', $validated['status']);
         }
 
         // Priority Filter
-        if ($filters['priority']) {
-            $query->where('priority', $filters['priority']);
+        if ($validated['priority'] ?? null) {
+            $query->where('priority', $validated['priority']);
         }
 
         $tasks = $query->latest()
-                    ->paginate(8)
+                    ->paginate(1)
                     ->withQueryString();
 
         return Inertia::render('Admin/Tasks/Index', [
