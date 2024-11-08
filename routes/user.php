@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,10 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['roles:user'
     Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function(){
         Route::get('/', [DashboardController::class, 'index'])->name('index');
     });
+
+    Route::group(['prefix' => 'tasks', 'as' => 'tasks.'], function(){
+        Route::get('/', [TaskController::class, 'index'])->name('index');
+    });
 });
 
-Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+

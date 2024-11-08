@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TaskController;
-
+use App\Http\Controllers\Admin\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,7 +15,7 @@ use App\Http\Controllers\Admin\TaskController;
 |
 */
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'roles:admin']], function() {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'is_admin']], function() {
     Route::group(['prefix' => 'dashboard', 'as' => 'dashboard.'], function(){
         Route::get('/', [DashboardController::class, 'index'])->name('index');
     });
@@ -27,5 +27,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['auth', 'r
         Route::get('/{id}/edit', [TaskController::class, 'edit'])->name('edit');
         Route::put('/{id}', [TaskController::class, 'update'])->name('update');
         Route::delete('/{id}', [TaskController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::group(['prefix' => 'users', 'as' => 'users.'], function(){
+        Route::get('/', [UserController::class, 'index'])->name('index');
     });
 });

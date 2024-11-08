@@ -10,11 +10,40 @@ use App\Models\TaskAssignment;
 use App\Models\User;
 class TaskController extends Controller
 {
-    public function index(){
-        $tasks = Task::latest()->paginate(10);
+    public function index(Request $request){
+        $query = Task::query();
+
+        $validated = $request->validate([
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'priority' => 'nullable|in:low,medium,high',
+        ]);
+
+        // Search
+        if ($validated['search'] ?? null) {
+            $query->where(function($q) use ($validated) {
+                $q->where('title', 'like', "%{$validated['search']}%")
+                ->orWhere('description', 'like', "%{$validated['search']}%");
+            });
+        }
+
+        // Status Filter
+        if ($validated['status'] ?? null) {
+            $query->where('status', $validated['status']);
+        }
+
+        // Priority Filter
+        if ($validated['priority'] ?? null) {
+            $query->where('priority', $validated['priority']);
+        }
+
+        $tasks = $query->latest()
+                    ->paginate(1)
+                    ->withQueryString();
 
         return Inertia::render('Admin/Tasks/Index', [
-            'tasks' => $tasks
+            'tasks' => $tasks,
+            'filters' => $request->only(['search', 'status', 'priority'])
         ]);
     }
 
@@ -56,14 +85,14 @@ class TaskController extends Controller
             'priority' => $validated['priority'],
         ]);
 
-        if (auth()->user()->is_admin && isset($validated['assigned_users'])) {
+        if (isset($validated['assigned_users'])) {
             $task->assignments()->delete();
 
             foreach ($validated['assigned_users'] as $userId) {
                 TaskAssignment::create([
                     'task_id' => $task->id,
                     'user_id' => $userId,
-                    'assigned_by' => auth()->id(),
+                    'assigned_by' => auth()->user()->id,
                 ]);
             }
         }
